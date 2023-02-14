@@ -38,9 +38,12 @@ class MainViewModel @Inject constructor(private val repository: ApiRepository) :
         }
     }
 
-    fun getAllMovies(): Flow<PagingData<Movie>> = Pager(
-        config = PagingConfig(20, enablePlaceholders = false)
-    ) {
-        MoviePagingSource(repository)
-    }.flow.cachedIn(viewModelScope)
+    fun getAllMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(25,
+                enablePlaceholders = false)
+        ) {
+            MoviePagingSource(repository)
+        }.flow.cachedIn(viewModelScope)
+    }
 }
