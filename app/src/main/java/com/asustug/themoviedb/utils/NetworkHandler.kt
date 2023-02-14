@@ -3,6 +3,7 @@ package com.asustug.themoviedb.utils
 import android.content.Context
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.lifecycle.LiveData
 import com.asustug.themoviedb.utils.extension.connectivityManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 
 @Singleton
 class NetworkHandler
-@Inject constructor(@ApplicationContext private val context: Context) {
+@Inject constructor(@ApplicationContext private val context: Context) : LiveData<Boolean>() {
     fun isNetworkAvailable(): Boolean {
         val connectivityManager = context.connectivityManager
 
