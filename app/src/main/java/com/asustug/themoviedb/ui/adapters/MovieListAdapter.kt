@@ -28,6 +28,7 @@ class MovieListAdapter(private val context: Context, private val movieList: Muta
             }
             imgMovie.load(IMAGE_URL+"${movie[position].posterPath}"){
                 crossfade(true)
+                crossfade(1000)
                 placeholder(R.drawable.ic_launcher_foreground)
             }
         }
@@ -48,11 +49,4 @@ class MovieListAdapter(private val context: Context, private val movieList: Muta
     }
 
     override fun getItemCount() = movieList.size
-
-    /*fun setUserList(updatedUserList: List<Movie>) {
-        val diffResult = DiffUtil.calculateDiff(MovieDiffUtilCallback(movieList, updatedUserList))
-        movieList.clear()
-        movieList.addAll(updatedUserList)
-        diffResult.dispatchUpdatesTo(this)
-    }*/
 }
