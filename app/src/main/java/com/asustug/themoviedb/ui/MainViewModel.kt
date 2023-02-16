@@ -40,7 +40,7 @@ class MainViewModel @Inject constructor(private val repository: ApiRepository) :
 
     fun getAllMovies(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(25,
+            config = PagingConfig(20,
                 enablePlaceholders = false)
         ) {
             MoviePagingSource(repository)
