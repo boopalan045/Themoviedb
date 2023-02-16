@@ -1,6 +1,7 @@
 package com.asustug.themoviedb.di
 
 import android.content.Context
+import com.asustug.themoviedb.BuildConfig
 import com.asustug.themoviedb.data.remote.ApiService
 import com.asustug.themoviedb.di.interceptors.AuthInterceptor
 import com.asustug.themoviedb.repositories.ApiRepository
@@ -41,7 +42,7 @@ class AppModule {
     @Singleton
     fun provideApiService(): ApiService {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
