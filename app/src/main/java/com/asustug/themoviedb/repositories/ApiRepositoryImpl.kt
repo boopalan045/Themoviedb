@@ -8,8 +8,8 @@ import javax.inject.Inject
 
 class ApiRepositoryImpl @Inject constructor(private val apiService: ApiService) : ApiRepository {
 
-    override suspend fun getMoviesList(apikey: String, page : Int): MovieResponse {
-       return apiService.getMoviesList(apikey, page)
+    override suspend fun getMoviesList(classify: String, apikey: String, page : Int): MovieResponse {
+       return apiService.getMoviesList(classify, apikey, page)
     }
 
 }

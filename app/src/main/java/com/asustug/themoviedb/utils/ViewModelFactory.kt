@@ -1,4 +1,4 @@
-package com.nec.devicemanagement.utils
+package com.asustug.themoviedb.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

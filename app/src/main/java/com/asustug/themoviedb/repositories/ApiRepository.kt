@@ -6,6 +6,6 @@ import retrofit2.Response
 
 interface ApiRepository {
 
-    suspend fun getMoviesList(apikey : String, page : Int) : MovieResponse
+    suspend fun getMoviesList(classify : String, apikey : String, page : Int) : MovieResponse
 
 }

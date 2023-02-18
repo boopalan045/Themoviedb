@@ -7,8 +7,9 @@ import retrofit2.http.*
 
 interface ApiService {
 
-    @GET("trending/movie/day")
+    @GET("trending/movie/{id}")
     suspend fun getMoviesList(
+        @Path("id") id: String,
         @Query("api_key") apikey : String,
         @Query("page") page : Int
     ) : MovieResponse

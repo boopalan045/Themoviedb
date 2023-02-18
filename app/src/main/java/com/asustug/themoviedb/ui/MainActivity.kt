@@ -1,9 +1,11 @@
 package com.asustug.themoviedb.ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,13 +17,17 @@ import com.asustug.themoviedb.databinding.ActivityMainBinding
 import com.asustug.themoviedb.repositories.ApiRepositoryImpl
 import com.asustug.themoviedb.ui.adapters.MovieListAdapter
 import com.asustug.themoviedb.ui.adapters.MoviePagingAdapter
+import com.asustug.themoviedb.ui.bottom_sheet.FilterBottomSheet
 import com.asustug.themoviedb.utils.NetworkHandler
 import com.asustug.themoviedb.utils.Utils
+import com.asustug.themoviedb.utils.ViewModelFactory
+import com.asustug.themoviedb.utils.dataStore.PreferenceDataStoreHelper
 import com.google.android.material.snackbar.Snackbar
 import com.nec.devicemanagement.utils.Status
-import com.nec.devicemanagement.utils.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
 import javax.inject.Inject
@@ -48,7 +54,15 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var networkHandler: NetworkHandler
 
+    @Inject
+    lateinit var filterBottomSheet: FilterBottomSheet
+
+    @Inject
+    lateinit var preferenceDataStoreHelper: PreferenceDataStoreHelper
+
     private val TAG = MainActivity::class.java.simpleName
+
+    lateinit var flow: Flow<String>
 
     init {
         if (BuildConfig.DEBUG) {
@@ -59,6 +73,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        saveTolocal()
+        setupBottomSheet()
+    }
+
+    private fun setupBottomSheet() {
+        binding.fabFilter.setOnClickListener {
+            filterBottomSheet.show(supportFragmentManager, FilterBottomSheet.TAG)
+            lifecycleScope.launchWhenStarted {
+                flow = preferenceDataStoreHelper.getPreference(stringPreferencesKey("id"), "")
+                flow.collect { data ->
+                    Toast.makeText(applicationContext, data, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -76,11 +104,11 @@ class MainActivity : AppCompatActivity() {
         setupUI()
     }
 
-    fun apiCallViaFlow() {
+    private fun apiCallViaFlow() {
         initSetup()
     }
 
-    fun initSetup() {
+    private fun initSetup() {
         setupViewModel()
         setupPagingUI()
         lifecycleScope.launchWhenStarted {
@@ -143,4 +171,12 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
+
+    fun saveTolocal() = lifecycleScope.launch {
+        preferenceDataStoreHelper.putPreference(stringPreferencesKey("id"), "week")
+    }
+
+    companion object{
+    }
+
 }

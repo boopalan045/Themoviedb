@@ -12,7 +12,7 @@ class MoviePagingSource @Inject constructor(private val apiRepository: ApiReposi
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val page = params.key ?: 1
-        val response = apiRepository.getMoviesList(Utils.apikey, page)
+        val response = apiRepository.getMoviesList("week",Utils.apikey, page)
         return try {
             LoadResult.Page(
                 response.results as MutableList<Movie>,
