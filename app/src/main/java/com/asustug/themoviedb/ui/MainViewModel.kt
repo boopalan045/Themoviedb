@@ -26,7 +26,7 @@ class MainViewModel @Inject constructor(private val repository: ApiRepository) :
         viewModelScope.launch {
             user.postValue(Resource.loading(data = null))
             try {
-                val response = repository.getMoviesList(apikey, 1)
+                val response = repository.getMoviesList("day", apikey, 1)
                 /*if (response.code() == 200) {
                     user.value = Resource.success(response.body())
                 } else {
