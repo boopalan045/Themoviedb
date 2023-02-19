@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.asustug.themoviedb.data.model.Movie
 import com.asustug.themoviedb.repositories.ApiRepository
+import com.asustug.themoviedb.ui.MainActivity
 import com.asustug.themoviedb.utils.Utils
 import javax.inject.Inject
 
@@ -12,7 +13,7 @@ class MoviePagingSource @Inject constructor(private val apiRepository: ApiReposi
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val page = params.key ?: 1
-        val response = apiRepository.getMoviesList("week",Utils.apikey, page)
+        val response = apiRepository.getMoviesList(MainActivity.CLASSIFY.finalData,Utils.apikey, page)
         return try {
             LoadResult.Page(
                 response.results as MutableList<Movie>,

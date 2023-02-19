@@ -43,7 +43,7 @@ class MoviePagingAdapter
                     crossfade(1000)
                     placeholder(R.drawable.ic_launcher_foreground)
                 }
-                tvTitle.setText(movie.title)
+                tvTitle.text = movie.title
                 imgTitle.setOnClickListener {
                     Snackbar.make(binding.root,movie.title.toString(),Snackbar.LENGTH_LONG).show()
                 }

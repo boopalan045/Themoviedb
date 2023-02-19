@@ -3,6 +3,7 @@ package com.asustug.themoviedb.ui
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -22,6 +23,8 @@ import com.asustug.themoviedb.utils.NetworkHandler
 import com.asustug.themoviedb.utils.Utils
 import com.asustug.themoviedb.utils.ViewModelFactory
 import com.asustug.themoviedb.utils.dataStore.PreferenceDataStoreHelper
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.nec.devicemanagement.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,6 +73,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object CLASSIFY {
+        var finalData = "week"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -79,14 +86,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomSheet() {
         binding.fabFilter.setOnClickListener {
-            filterBottomSheet.show(supportFragmentManager, FilterBottomSheet.TAG)
-            lifecycleScope.launchWhenStarted {
-                flow = preferenceDataStoreHelper.getPreference(stringPreferencesKey("id"), "")
-                flow.collect { data ->
-                    Toast.makeText(applicationContext, data, Toast.LENGTH_SHORT).show()
-                }
+            customBottomSheet()
+        }
+    }
+
+    private fun customBottomSheet() {
+        val bottomSheet = findViewById<ConstraintLayout>(R.id.bottomSheet)
+        val chipDay = findViewById<Chip>(R.id.chip_day)
+        val chipWeek = findViewById<Chip>(R.id.chip_week)
+        val filterSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        filterSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        chipDay.setOnClickListener {
+            if (chipDay.isChecked()) {
+                Toast.makeText(applicationContext, "Day", Toast.LENGTH_SHORT).show()
+                CLASSIFY.finalData = "day"
+                hideBottomSheet(filterSheetBehavior)
             }
         }
+        chipWeek.setOnClickListener {
+            if (chipWeek.isChecked()) {
+                Toast.makeText(applicationContext, "Week", Toast.LENGTH_SHORT).show()
+                CLASSIFY.finalData = "week"
+                hideBottomSheet(filterSheetBehavior)
+            }
+        }
+    }
+
+    fun hideBottomSheet(filterSheetBehavior: BottomSheetBehavior<ConstraintLayout>) {
+        apiCallViaFlow()
+        filterSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        filterSheetBehavior.isHideable = true
     }
 
     override fun onResume() {
@@ -175,8 +204,4 @@ class MainActivity : AppCompatActivity() {
     fun saveTolocal() = lifecycleScope.launch {
         preferenceDataStoreHelper.putPreference(stringPreferencesKey("id"), "week")
     }
-
-    companion object{
-    }
-
 }
