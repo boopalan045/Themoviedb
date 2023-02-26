@@ -6,6 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
 import com.asustug.themoviedb.R
 import com.asustug.themoviedb.data.model.Movie
 import com.asustug.themoviedb.databinding.LayoutMovieItemBinding
@@ -14,8 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
 class MoviePagingAdapter
-    @Inject constructor()
-    : PagingDataAdapter<Movie, MoviePagingAdapter.MovieViewHolder>(Diff()) {
+@Inject constructor() : PagingDataAdapter<Movie, MoviePagingAdapter.MovieViewHolder>(Diff()) {
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position)
@@ -38,14 +38,14 @@ class MoviePagingAdapter
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             binding.apply {
-                imgTitle.load(IMAGE_URL + movie.posterPath){
+                imgTitle.load(IMAGE_URL + movie.posterPath) {
                     crossfade(true)
                     crossfade(1000)
                     placeholder(R.drawable.ic_launcher_foreground)
                 }
                 tvTitle.text = movie.title
                 imgTitle.setOnClickListener {
-                    Snackbar.make(binding.root,movie.title.toString(),Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, movie.title.toString(), Snackbar.LENGTH_LONG).show()
                 }
             }
         }

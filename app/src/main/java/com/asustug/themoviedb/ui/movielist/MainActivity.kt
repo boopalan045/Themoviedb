@@ -1,4 +1,4 @@
-package com.asustug.themoviedb.ui
+package com.asustug.themoviedb.ui.movielist
 
 import android.os.Bundle
 import android.widget.Toast
@@ -9,7 +9,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.asustug.themoviedb.BuildConfig
 import com.asustug.themoviedb.R
 import com.asustug.themoviedb.data.model.Movie
@@ -19,6 +21,7 @@ import com.asustug.themoviedb.repositories.ApiRepositoryImpl
 import com.asustug.themoviedb.ui.adapters.MovieListAdapter
 import com.asustug.themoviedb.ui.adapters.MoviePagingAdapter
 import com.asustug.themoviedb.ui.bottom_sheet.FilterBottomSheet
+import com.asustug.themoviedb.ui.paging.MovieListLoadStateAdapter
 import com.asustug.themoviedb.utils.NetworkHandler
 import com.asustug.themoviedb.utils.Utils
 import com.asustug.themoviedb.utils.ViewModelFactory
@@ -99,14 +102,14 @@ class MainActivity : AppCompatActivity() {
         chipDay.setOnClickListener {
             if (chipDay.isChecked()) {
                 Toast.makeText(applicationContext, "Day", Toast.LENGTH_SHORT).show()
-                CLASSIFY.finalData = "day"
+                finalData = "day"
                 hideBottomSheet(filterSheetBehavior)
             }
         }
         chipWeek.setOnClickListener {
             if (chipWeek.isChecked()) {
                 Toast.makeText(applicationContext, "Week", Toast.LENGTH_SHORT).show()
-                CLASSIFY.finalData = "week"
+                finalData = "week"
                 hideBottomSheet(filterSheetBehavior)
             }
         }
@@ -153,15 +156,31 @@ class MainActivity : AppCompatActivity() {
     private fun setupUI() {
         val recyclerView = binding.rvLoadMovies
         adapter = MovieListAdapter(applicationContext, arrayListOf())
-        recyclerView.layoutManager = GridLayoutManager(this, 3)
+        recyclerView.layoutManager.apply {
+            GridLayoutManager(applicationContext, 3)
+        }
         recyclerView.adapter = adapter
     }
 
     private fun setupPagingUI() {
         val recyclerView = binding.rvLoadMovies
         moviePagingAdapter = MoviePagingAdapter()
-        recyclerView.layoutManager = GridLayoutManager(this, 3)
-        recyclerView.adapter = moviePagingAdapter
+        val footerAdapter = MovieListLoadStateAdapter{}
+        val concatAdapter = moviePagingAdapter.withLoadStateFooter(
+            footer = footerAdapter
+        )
+        recyclerView.adapter = concatAdapter
+        val layoutManager = GridLayoutManager(this, 2)
+        recyclerView.layoutManager = layoutManager
+        layoutManager.spanSizeLookup = object : SpanSizeLookup(){
+            override fun getSpanSize(position: Int): Int {
+                return if (position == concatAdapter.itemCount - 1 && footerAdapter.itemCount > 0){
+                    2
+                } else {
+                    1
+                }
+            }
+        }
     }
 
     private fun renderList(users: List<Movie>) {

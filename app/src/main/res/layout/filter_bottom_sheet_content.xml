@@ -8,19 +8,27 @@
     android:background="@android:color/white"
     app:behavior_peekHeight="0dp"
     app:behavior_skipCollapsed="true"
+    android:layout_marginLeft="10sp"
     app:layout_behavior="@string/bottom_sheet_behavior"
     tools:ignore="MissingDefaultResource">
 
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="10sp"
+        android:fontFamily="sans-serif-black"
+        android:text="Filter by"/>
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chip_filter"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="10sp"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle"
         app:singleSelection="true"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:layout_editor_absoluteX="10dp">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_day"

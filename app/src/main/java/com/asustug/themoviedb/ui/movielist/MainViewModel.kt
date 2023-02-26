@@ -1,4 +1,4 @@
-package com.asustug.themoviedb.ui
+package com.asustug.themoviedb.ui.movielist
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

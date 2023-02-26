@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.asustug.themoviedb.data.model.Movie
 import com.asustug.themoviedb.repositories.ApiRepository
-import com.asustug.themoviedb.ui.MainActivity
+import com.asustug.themoviedb.ui.movielist.MainActivity
 import com.asustug.themoviedb.utils.Utils
 import javax.inject.Inject
 

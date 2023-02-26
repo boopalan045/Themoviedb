@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.asustug.themoviedb.ui.MainViewModel" />
+            type="com.asustug.themoviedb.ui.movielist.MainViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

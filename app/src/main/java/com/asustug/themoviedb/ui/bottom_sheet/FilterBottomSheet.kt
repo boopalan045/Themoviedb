@@ -4,13 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Toast
 import com.asustug.themoviedb.R
-import com.asustug.themoviedb.ui.MainActivity.CLASSIFY.finalData
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
 
