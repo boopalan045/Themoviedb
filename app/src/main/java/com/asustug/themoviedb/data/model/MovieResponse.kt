@@ -1,6 +1,10 @@
 package com.asustug.themoviedb.data.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.parcelize.Parceler
+import kotlinx.parcelize.Parcelize
 
 data class MovieResponse(
 
@@ -16,7 +20,7 @@ data class MovieResponse(
 	@Json(name="total_results")
 	val totalResults: Int? = null
 )
-
+@Parcelize
 data class Movie(
 
 	@Json(name="overview")
@@ -50,10 +54,10 @@ data class Movie(
 	val releaseDate: String? = null,
 
 	@Json(name="popularity")
-	val popularity: Any? = null,
+	val popularity: String? = null,
 
 	@Json(name="vote_average")
-	val voteAverage: Any? = null,
+	val voteAverage: String? = null,
 
 	@Json(name="id")
 	val id: Int? = null,
@@ -63,4 +67,5 @@ data class Movie(
 
 	@Json(name="vote_count")
 	val voteCount: Int? = null
-)
+) : Parcelable
+

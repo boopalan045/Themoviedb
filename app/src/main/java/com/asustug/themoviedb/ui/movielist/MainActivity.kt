@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.asustug.themoviedb.BuildConfig
@@ -37,7 +36,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -164,18 +162,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupPagingUI() {
         val recyclerView = binding.rvLoadMovies
-        moviePagingAdapter = MoviePagingAdapter()
+        moviePagingAdapter = MoviePagingAdapter(applicationContext)
         val footerAdapter = MovieListLoadStateAdapter{}
         val concatAdapter = moviePagingAdapter.withLoadStateFooter(
             footer = footerAdapter
         )
         recyclerView.adapter = concatAdapter
-        val layoutManager = GridLayoutManager(this, 2)
+        val layoutManager = GridLayoutManager(this, 3)
         recyclerView.layoutManager = layoutManager
         layoutManager.spanSizeLookup = object : SpanSizeLookup(){
             override fun getSpanSize(position: Int): Int {
                 return if (position == concatAdapter.itemCount - 1 && footerAdapter.itemCount > 0){
-                    2
+                    3
                 } else {
                     1
                 }

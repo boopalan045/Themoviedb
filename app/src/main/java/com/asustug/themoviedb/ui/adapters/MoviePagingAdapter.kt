@@ -1,26 +1,28 @@
 package com.asustug.themoviedb.ui.adapters
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.request.CachePolicy
 import com.asustug.themoviedb.R
 import com.asustug.themoviedb.data.model.Movie
 import com.asustug.themoviedb.databinding.LayoutMovieItemBinding
+import com.asustug.themoviedb.ui.moviedetail.MovieDetailActivity
 import com.asustug.themoviedb.utils.Utils.Companion.IMAGE_URL
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class MoviePagingAdapter
-@Inject constructor() : PagingDataAdapter<Movie, MoviePagingAdapter.MovieViewHolder>(Diff()) {
+class MoviePagingAdapter @Inject constructor(@ApplicationContext val applicationContext: Context) : PagingDataAdapter<Movie, MoviePagingAdapter.MovieViewHolder>(Diff()) {
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position)
         if (movie != null) {
-            holder.bind(movie)
+            holder.bind(movie,applicationContext)
         }
     }
 
@@ -36,7 +38,7 @@ class MoviePagingAdapter
 
     class MovieViewHolder(private val binding: LayoutMovieItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Movie) {
+        fun bind(movie: Movie, context: Context) {
             binding.apply {
                 imgTitle.load(IMAGE_URL + movie.posterPath) {
                     crossfade(true)
@@ -46,6 +48,10 @@ class MoviePagingAdapter
                 tvTitle.text = movie.title
                 imgTitle.setOnClickListener {
                     Snackbar.make(binding.root, movie.title.toString(), Snackbar.LENGTH_LONG).show()
+                    val intent = Intent(context, MovieDetailActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.putExtra("extra_item", movie)
+                    context.startActivity(intent)
                 }
             }
         }
