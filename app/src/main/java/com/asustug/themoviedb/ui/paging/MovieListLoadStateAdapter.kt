@@ -23,7 +23,6 @@ class MovieListLoadStateAdapter(private val retry: () -> Unit) :
         fun bind(state: LoadState) {
             binding.apply {
                 progressBar.isVisible = state is LoadState.Loading
-                button.isVisible = state !is LoadState.Loading
             }
         }
     }

@@ -13,6 +13,10 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
 
     lateinit var radioGroup: ChipGroup
 
+    init {
+        isCancelable = true
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

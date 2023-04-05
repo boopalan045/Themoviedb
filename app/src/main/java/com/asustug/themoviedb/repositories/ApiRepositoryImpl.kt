@@ -12,4 +12,8 @@ class ApiRepositoryImpl @Inject constructor(private val apiService: ApiService) 
        return apiService.getMoviesList(classify, apikey, page)
     }
 
+    override suspend fun searchMovies(query: String, apikey: String, page: Int): MovieResponse {
+        return apiService.searchMovies(query, apikey, page)
+    }
+
 }

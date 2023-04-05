@@ -53,6 +53,7 @@ class MoviePagingAdapter @Inject constructor(@ApplicationContext val application
                     intent.putExtra("extra_item", movie)
                     context.startActivity(intent)
                 }
+                executePendingBindings()
             }
         }
     }

@@ -1,9 +1,7 @@
 package com.asustug.themoviedb.data.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 
 data class MovieResponse(

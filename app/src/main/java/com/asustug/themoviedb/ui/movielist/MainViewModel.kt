@@ -2,14 +2,13 @@ package com.asustug.themoviedb.ui.movielist
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.paging.*
 import com.asustug.themoviedb.data.model.Movie
 import com.asustug.themoviedb.data.model.MovieResponse
 import com.asustug.themoviedb.repositories.ApiRepository
+import com.asustug.themoviedb.ui.paging.MoviePagingSearchSource
 import com.asustug.themoviedb.ui.paging.MoviePagingSource
 import com.nec.devicemanagement.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,5 +44,22 @@ class MainViewModel @Inject constructor(private val repository: ApiRepository) :
         ) {
             MoviePagingSource(repository)
         }.flow.cachedIn(viewModelScope)
+    }
+
+    fun getSearchResultsPaging(query: String): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(20,
+                enablePlaceholders = false)
+        ) {
+            MoviePagingSearchSource(repository,query)
+        }.flow.cachedIn(viewModelScope)
+    }
+
+    /*val photos = currentQuery.switchMap { queryString ->
+        repository.getSearchResults(queryString).cachedIn(viewModelScope)
+    }*/
+
+    companion object {
+        private const val DEFAULT_QUERY = "cats"
     }
 }
