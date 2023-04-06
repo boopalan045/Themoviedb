@@ -1,11 +1,16 @@
 package com.asustug.themoviedb.ui.movielist
 
+import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,6 +53,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mainViewModel: MainViewModel
 
+    private var doubleBackToExitPressedOnce: Boolean = false
+
     @Inject
     lateinit var apiService: ApiService
 
@@ -55,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var searchView: SearchView
 
-    var searchQuery : String? = null
+    var searchQuery: String? = null
 
     @Inject
     lateinit var utils: Utils
@@ -94,7 +101,11 @@ class MainActivity : AppCompatActivity() {
         saveTolocal()
         setupBottomSheet()
         if (networkHandler.isNetworkAvailable()) {
-            apiCallViaFlow()
+            if (searchQuery != null && searchQuery!!.isNotEmpty()) {
+                search()
+            } else {
+                apiCallViaFlow()
+            }
         } else {
             Timber.d("Network is not available")
             Snackbar.make(binding.root, "Network is not available", Snackbar.LENGTH_LONG).show()
@@ -138,7 +149,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        search()
     }
 
     fun apiCallViaLiveData() {
@@ -226,7 +236,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processData(results: List<Movie>) {
-        renderList(results)
+        results.let { movie -> renderList(movie) }
     }
 
     override fun onDestroy() {
@@ -263,28 +273,61 @@ class MainActivity : AppCompatActivity() {
                         // submit the new queryText to the viewModel, this will trigger a new search
                         searchQuery = query!!.trim().toString()
                         search()
+                        //item.collapseActionView()
                         return true
                     }
+
                     override fun onQueryTextChange(newText: String?): Boolean {
                         // submit the changed text to the viewModel, this will trigger a new search
                         return true
                     }
                 })
-                return true
             }
         }
+        searchView.setIconifiedByDefault(true);
         return super.onOptionsItemSelected(item)
     }
 
-    private fun search(){
-        if(searchQuery!=null && searchQuery!!.isNotEmpty())
-            lifecycleScope.launch {
-                mainViewModel.getSearchResultsPaging(searchQuery!!)
-                    .collectLatest { response ->
-                        moviePagingAdapter.submitData(response)
-                    }
+    private fun search() {
+        hideSoftKeyboard()
+        if (searchQuery != null && searchQuery!!.isNotEmpty()) {
+            lifecycleScope.launchWhenStarted {
+                mainViewModel.getSearchResultsPaging(searchQuery!!).collectLatest { response ->
+                    moviePagingAdapter.submitData(response)
+                }
             }
+        }
     }
 
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            searchQuery = ""
+            finish()
+        }
+        this.doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            doubleBackToExitPressedOnce = false
+        }, 2000)
+    }
+
+    fun hideSoftKeyboard() {
+        currentFocus?.let {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+    }
+
+    fun resetActionBar()
+    {
+        val actionBar: ActionBar? = supportActionBar
+        actionBar.apply {
+            this!!.customView = null
+            setDisplayShowCustomEnabled(false)
+            setDisplayShowTitleEnabled(true)
+            setTitle(com.asustug.themoviedb.R.string.app_name)
+        }
+    }
 
 }
