@@ -1,13 +1,16 @@
 package com.asustug.themoviedb.di
 
 import android.content.Context
+import com.asustug.themoviedb.BuildConfig
 import com.asustug.themoviedb.data.remote.ApiService
 import com.asustug.themoviedb.di.interceptors.AuthInterceptor
 import com.asustug.themoviedb.repositories.ApiRepository
 import com.asustug.themoviedb.repositories.ApiRepositoryImpl
+import com.asustug.themoviedb.ui.bottom_sheet.FilterBottomSheet
 import com.asustug.themoviedb.utils.Utils
 import com.asustug.themoviedb.utils.Utils.Companion.BASE_URL
 import com.asustug.themoviedb.utils.dataStore.PreferenceDataStoreHelper
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -41,7 +44,7 @@ class AppModule {
     @Singleton
     fun provideApiService(): ApiService {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
@@ -64,5 +67,11 @@ class AppModule {
     @Singleton
     fun provideUtils(@ApplicationContext context: Context): Utils {
         return Utils(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBottomSheet(): FilterBottomSheet {
+        return FilterBottomSheet()
     }
 }
